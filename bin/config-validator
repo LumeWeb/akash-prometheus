@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Validate environment variables
+validate_env() {
+  required_vars=("AWS_ACCESS_KEY_ID" "AWS_SECRET_ACCESS_KEY" "AWS_REGION" "AWS_BUCKET_NAME" "AWS_S3_ENDPOINT" "PROMSTER_SCRAPE_ETCD_URL" "PROMSTER_ETCD_USERNAME" "PROMSTER_ETCD_PASSWORD")
+  for var in "${required_vars[@]}"; do
+    if [ -z "${!var}" ]; then
+      echo "Error: ${var} is not set"
+      exit 1
+    fi
+  done
+}
+
+# Validate S3 connection
+validate_s3() {
+  # Test S3 connection using mc CLI
+  if ! mc --endpoint=${AWS_S3_ENDPOINT} ls ${AWS_BUCKET_NAME} > /dev/null; then
+    echo "Error: Unable to connect to S3"
+    exit 1
+  fi
+}
+
+# Validate file system
+validate_paths() {
+  required_paths=("/data" "/etc/crontab" "/prometheus.yml")
+  for path in "${required_paths[@]}"; do
+    if [ ! -e "${path}" ]; then
+      echo "Error: ${path} does not exist"
+      exit 1
+    fi
+  done
+}
+
+case $1 in
+  --check-env)
+    validate_env
+    ;;
+  --check-s3)
+    validate_s3
+    ;;
+  --check-paths)
+    validate_paths
+    ;;
+  *)
+    echo "Usage: config-validator <option>"
+    exit 1
+    ;;
+esac

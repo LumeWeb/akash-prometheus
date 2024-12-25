@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Remove old backups
+cleanup() {
+  # Use mc CLI to remove old backups
+  mc --endpoint=${AWS_S3_ENDPOINT} rm --recursive --force ${AWS_BUCKET_NAME}/
+}
+
+# Calculate restore size
+calculate_restore_size() {
+  # Use mc CLI to calculate restore size
+  mc --endpoint=${AWS_S3_ENDPOINT} du --recursive ${AWS_BUCKET_NAME}/
+}
+
+# Compact TSDB
+compact_tsdb() {
+  # Use Prometheus CLI to compact TSDB
+  prometheus --config.file=/prometheus.yml --storage.tsdb.path=/data --compact
+}
+
+case $1 in
+  --cleanup)
+    cleanup
+    ;;
+  --calculate)
+    calculate_restore_size
+    ;;
+  --optimize)
+    compact_tsdb
+    ;;
+  *)
+    echo "Usage: storage-manager <option>"
+    exit 1
+    ;;
+esac
