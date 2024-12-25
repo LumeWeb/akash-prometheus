@@ -2,7 +2,18 @@
 
 # Validate environment variables
 validate_env() {
-  required_vars=("AWS_ACCESS_KEY_ID" "AWS_SECRET_ACCESS_KEY" "AWS_REGION" "AWS_BUCKET_NAME" "AWS_S3_ENDPOINT" "PROMSTER_SCRAPE_ETCD_URL" "PROMSTER_ETCD_USERNAME" "PROMSTER_ETCD_PASSWORD")
+  required_vars=(
+  "AWS_ACCESS_KEY_ID"
+  "AWS_SECRET_ACCESS_KEY"
+  "AWS_REGION"
+  "AWS_BUCKET_NAME"
+  "AWS_S3_ENDPOINT"
+  "PROMSTER_SCRAPE_ETCD_URL"
+  "PROMSTER_ETCD_BASE_PATH"
+  "PROMSTER_SCRAPE_ETCD_PATHS"
+  "PROMSTER_ETCD_USERNAME"
+  "PROMSTER_ETCD_PASSWORD"
+)
   for var in "${required_vars[@]}"; do
     if [ -z "${!var}" ]; then
       echo "Error: ${var} is not set"
