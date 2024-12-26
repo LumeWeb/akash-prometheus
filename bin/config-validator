@@ -32,22 +32,10 @@ validate_s3() {
   fi
 }
 
-# Validate file system
-validate_paths() {
-  required_paths=("/data" "/prometheus.yml")
-  for path in "${required_paths[@]}"; do
-    if [ ! -e "${path}" ]; then
-      echo "Error: ${path} does not exist"
-      exit 1
-    fi
-  done
-}
-
 # Initialize system
 init() {
   validate_env
   validate_s3
-  validate_paths
   touch /etc/crontab
 }
 
@@ -58,15 +46,12 @@ case $1 in
   --check-s3)
     validate_s3
     ;;
-  --check-paths)
-    validate_paths
-    ;;
   --init)
     init
     ;;
   *)
     echo "Usage: config-validator <option>"
-    echo "Available options: --check-env, --check-s3, --check-paths, --init"
+    echo "Available options: --check-env, --check-s3, --init"
     exit 1
     ;;
 esac
