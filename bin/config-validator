@@ -42,6 +42,13 @@ validate_paths() {
   done
 }
 
+# Initialize system
+init() {
+  validate_env
+  validate_s3
+  validate_paths
+}
+
 case $1 in
   --check-env)
     validate_env
@@ -52,8 +59,12 @@ case $1 in
   --check-paths)
     validate_paths
     ;;
+  --init)
+    init
+    ;;
   *)
     echo "Usage: config-validator <option>"
+    echo "Available options: --check-env, --check-s3, --check-paths, --init"
     exit 1
     ;;
 esac
