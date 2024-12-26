@@ -3,7 +3,7 @@
 # Perform backup
 backup() {
   # Use mc CLI to upload TSDB files to S3
-  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}
+  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} 2>/dev/null
   mc mirror --overwrite /data s3/${AWS_BUCKET_NAME}/
 }
 
@@ -14,7 +14,7 @@ restore() {
   available_disk_space_bytes=$(echo "$available_disk_space * 1024 * 1024" | bc)
 
   # Calculate total size of data to be restored
-  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}
+  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} 2>/dev/null
   total_size=$(mc du --recursive s3/${AWS_BUCKET_NAME}/ | awk '{print $1}')
 
   # Calculate max safe threshold
@@ -33,14 +33,14 @@ restore() {
 # Verify backup integrity
 verify() {
   # Use mc CLI to verify backup integrity
-  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}
+  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} 2>/dev/null
   mc ls s3/${AWS_BUCKET_NAME}/
 }
 
 # List available backups
 list() {
   # Use mc CLI to list available backups
-  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}
+  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} 2>/dev/null
   mc ls s3/${AWS_BUCKET_NAME}/
 }
 
