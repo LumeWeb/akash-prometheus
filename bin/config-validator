@@ -34,7 +34,7 @@ validate_s3() {
 
 # Validate file system
 validate_paths() {
-  required_paths=("/data" "/etc/crontab" "/prometheus.yml")
+  required_paths=("/data" "/prometheus.yml")
   for path in "${required_paths[@]}"; do
     if [ ! -e "${path}" ]; then
       echo "Error: ${path} does not exist"
@@ -48,6 +48,7 @@ init() {
   validate_env
   validate_s3
   validate_paths
+  touch /etc/crontab
 }
 
 case $1 in
