@@ -25,7 +25,7 @@ validate_env() {
 # Validate S3 connection
 validate_s3() {
   # Test S3 connection using mc CLI
-  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}
+  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} 2>/dev/null
   if ! mc ls s3/${AWS_BUCKET_NAME} > /dev/null; then
     echo "Error: Unable to connect to S3"
     exit 1
