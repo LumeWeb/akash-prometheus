@@ -34,7 +34,12 @@ if [ ! -d "${PROMETHEUS_DATA_DIR}" ] || [ -z "$(ls -A ${PROMETHEUS_DATA_DIR})" ]
 fi
 
 # 4. Start monitoring
-/opt/bitnami/prometheus/bin/prometheus --config.file=${PROMETHEUS_CONFIG_FILE} --storage.tsdb.path=${PROMETHEUS_DATA_DIR} --web.enable-lifecycle &
+(while true; do
+  /opt/bitnami/prometheus/bin/prometheus --config.file=${PROMETHEUS_CONFIG_FILE} --storage.tsdb.path=${PROMETHEUS_DATA_DIR} --web.enable-lifecycle &
+  prometheus_pid=$!
+  wait $prometheus_pid
+  echo "Prometheus crashed, restarting..."
+done) &
 
 # 5. Wait for Prometheus to be ready
 while ! curl -s -f -o /dev/null http://localhost:9090/-/ready; do
