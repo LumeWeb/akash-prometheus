@@ -3,13 +3,15 @@
 # Remove old backups
 cleanup() {
   # Use mc CLI to remove old backups
-  mc --endpoint=${AWS_S3_ENDPOINT} rm --recursive --force ${AWS_BUCKET_NAME}/
+  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}
+  mc rm --recursive --force s3/${AWS_BUCKET_NAME}/
 }
 
 # Calculate restore size
 calculate_restore_size() {
   # Use mc CLI to calculate restore size
-  mc --endpoint=${AWS_S3_ENDPOINT} du --recursive ${AWS_BUCKET_NAME}/
+  mc alias set s3 ${AWS_S3_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}
+  mc du --recursive s3/${AWS_BUCKET_NAME}/
 }
 
 # Compact TSDB
