@@ -34,10 +34,17 @@ if [ ! -d "${PROMETHEUS_DATA_DIR}" ] || [ -z "$(ls -A ${PROMETHEUS_DATA_DIR})" ]
 fi
 
 # 4. Start monitoring
-/bin/promster &
 /opt/bitnami/prometheus/bin/prometheus --config.file=${PROMETHEUS_CONFIG_FILE} --storage.tsdb.path=${PROMETHEUS_DATA_DIR} --web.enable-lifecycle &
 
-# 5. Configure backup schedule
+# 5. Wait for Prometheus to be ready
+while ! curl -s -f -o /dev/null http://localhost:9090/-/ready; do
+   sleep 1
+done
+
+# 6. Start Promster
+/bin/promster &
+
+# 5. Start backup and storage manager
 echo "${BACKUP_SCHEDULE} backup-manager --backup" >> /etc/crontab
 echo "0 0 * * * storage-manager --optimize" >> /etc/crontab
 supercronic /etc/crontab
