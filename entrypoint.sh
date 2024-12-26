@@ -35,7 +35,7 @@ fi
 
 # 4. Start monitoring
 (while true; do
-  /opt/bitnami/prometheus/bin/prometheus --config.file=${PROMETHEUS_CONFIG_FILE} --storage.tsdb.path=${PROMETHEUS_DATA_DIR} --web.enable-lifecycle &
+  /opt/bitnami/prometheus/bin/prometheus --config.file=${PROMETHEUS_CONFIG_FILE} --storage.tsdb.path=${PROMETHEUS_DATA_DIR} --web.config.file=/etc/prometheus/web-config.yml --web.enable-lifecycle &
   prometheus_pid=$!
   wait $prometheus_pid
   echo "Prometheus crashed, restarting..."

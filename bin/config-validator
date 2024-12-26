@@ -13,6 +13,8 @@ validate_env() {
   "PROMSTER_SCRAPE_ETCD_PATHS"
   "PROMSTER_ETCD_USERNAME"
   "PROMSTER_ETCD_PASSWORD"
+  "PROMETHEUS_ADMIN_USERNAME"
+  "PROMETHEUS_ADMIN_PASSWORD"
 )
   for var in "${required_vars[@]}"; do
     if [ -z "${!var}" ]; then
@@ -32,10 +34,27 @@ validate_s3() {
   fi
 }
 
+# Generate auth web yaml
+generate_auth_yaml() {
+  hashed_password=$(mkpasswd --method=bcrypt "${PROMETHEUS_ADMIN_PASSWORD}")
+  cat > /etc/prometheus/web-config.yml <<EOF
+basic_auth_users:
+  ${PROMETHEUS_ADMIN_USERNAME}: ${hashed_password}
+EOF
+}
+
+# Validate Prometheus configuration
+validate_prom_config() {
+  promtool check config /etc/prometheus/prometheus.yml
+  promtool check web-config /etc/prometheus/web-config.yml
+}
+
 # Initialize system
 init() {
   validate_env
   validate_s3
+  generate_auth_yaml
+  validate_prom_config
   touch /etc/crontab
   touch ${PROMETHEUS_CONFIG_FILE}
 }

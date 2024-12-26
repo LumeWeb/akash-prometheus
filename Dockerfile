@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
     wget \
     curl \
     ca-certificates \
+    whois \
     && rm -rf /var/cache/apt/*
 
 # Install MinIO client
