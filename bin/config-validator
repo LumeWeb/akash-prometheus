@@ -37,6 +37,7 @@ init() {
   validate_env
   validate_s3
   touch /etc/crontab
+  touch ${PROMETHEUS_CONFIG_FILE}
 }
 
 case $1 in
