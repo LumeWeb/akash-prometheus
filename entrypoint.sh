@@ -42,9 +42,15 @@ fi
 done) &
 
 # 5. Wait for Prometheus to be ready
-while ! curl -s -f -o /dev/null http://localhost:9090/-/ready; do
-   sleep 1
-done
+if [ -n "${PROMETHEUS_ADMIN_USERNAME}" ] && [ -n "${PROMETHEUS_ADMIN_PASSWORD}" ]; then
+  while ! curl -s -f -o /dev/null -u ${PROMETHEUS_ADMIN_USERNAME}:${PROMETHEUS_ADMIN_PASSWORD} http://localhost:9090/-/ready; do
+    sleep 1
+  done
+else
+  while ! curl -s -f -o /dev/null http://localhost:9090/-/ready; do
+    sleep 1
+  done
+fi
 
 # 6. Start Promster
 /bin/promster &
